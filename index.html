@@ -15,46 +15,9 @@
     <meta name="theme-color" content="#d1d1d6" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     
-    <!-- 動態生成 PNG 格式的 App Icon (完美解決 Safari/iOS 不支援 SVG Icon 嘅問題) -->
-    <script>
-        (function() {
-            var canvas = document.createElement('canvas');
-            canvas.width = 192;
-            canvas.height = 192;
-            var ctx = canvas.getContext('2d');
-            
-            // 白底 (iOS 會自動為 Apple Touch Icon 加上圓角遮罩)
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, 192, 192);
-            
-            // 黑色 "IV" 文字
-            ctx.fillStyle = '#000000';
-            ctx.font = 'bold 130px Arial, sans-serif';
-            ctx.fillText('IV', 22, 145);
-            
-            // 紅點
-            ctx.fillStyle = '#ff3b30';
-            ctx.beginPath();
-            ctx.arc(155, 135, 20, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // 轉換為 iOS 100% 支援嘅標準 PNG Data URL
-            var dataUrl = canvas.toDataURL('image/png');
-            
-            // 加入 Favicon (分頁圖示)
-            var icon = document.createElement('link');
-            icon.rel = 'icon';
-            icon.type = 'image/png';
-            icon.href = dataUrl;
-            document.head.appendChild(icon);
-            
-            // 加入 Apple Touch Icon (加到主畫面圖示)
-            var appleIcon = document.createElement('link');
-            appleIcon.rel = 'apple-touch-icon';
-            appleIcon.href = dataUrl;
-            document.head.appendChild(appleIcon);
-        })();
-    </script>
+    <!-- 終極解決方案：使用真實嘅外部 PNG 圖片網址，確保 iOS 100% 讀取到 -->
+    <link rel="icon" type="image/png" href="https://ui-avatars.com/api/?name=IV&background=ffffff&color=000000&size=192&bold=true">
+    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=IV&background=ffffff&color=000000&size=192&bold=true">
 
     <style>
         /* 極簡風格顏色變數 */

@@ -15,11 +15,46 @@
     <meta name="theme-color" content="#d1d1d6" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     
-    <!-- 網頁分頁圖示 (Favicon) -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjZmZmZmZmIi8+PHRleHQgeD0iMTIiIHk9Ijc1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNzAiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMDAwMDAwIiBsZXR0ZXItc3BhY2luZz0iLTIiPklWPC90ZXh0PjxjaXJjbGUgY3g9IjgyIiBjeT0iNzAiIHI9IjExIiBmaWxsPSIjZmYzYjMwIi8+PC9zdmc+">
-    
-    <!-- 加入 Apple Touch Icon，讓 iPhone 儲存至主畫面時顯示專屬 App Icon -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjZmZmZmZmIi8+PHRleHQgeD0iMTIiIHk9Ijc1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNzAiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMDAwMDAwIiBsZXR0ZXItc3BhY2luZz0iLTIiPklWPC90ZXh0PjxjaXJjbGUgY3g9IjgyIiBjeT0iNzAiIHI9IjExIiBmaWxsPSIjZmYzYjMwIi8+PC9zdmc+">
+    <!-- 動態生成 PNG 格式的 App Icon (完美解決 Safari/iOS 不支援 SVG Icon 嘅問題) -->
+    <script>
+        (function() {
+            var canvas = document.createElement('canvas');
+            canvas.width = 192;
+            canvas.height = 192;
+            var ctx = canvas.getContext('2d');
+            
+            // 白底 (iOS 會自動為 Apple Touch Icon 加上圓角遮罩)
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, 192, 192);
+            
+            // 黑色 "IV" 文字
+            ctx.fillStyle = '#000000';
+            ctx.font = 'bold 130px Arial, sans-serif';
+            ctx.fillText('IV', 22, 145);
+            
+            // 紅點
+            ctx.fillStyle = '#ff3b30';
+            ctx.beginPath();
+            ctx.arc(155, 135, 20, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 轉換為 iOS 100% 支援嘅標準 PNG Data URL
+            var dataUrl = canvas.toDataURL('image/png');
+            
+            // 加入 Favicon (分頁圖示)
+            var icon = document.createElement('link');
+            icon.rel = 'icon';
+            icon.type = 'image/png';
+            icon.href = dataUrl;
+            document.head.appendChild(icon);
+            
+            // 加入 Apple Touch Icon (加到主畫面圖示)
+            var appleIcon = document.createElement('link');
+            appleIcon.rel = 'apple-touch-icon';
+            appleIcon.href = dataUrl;
+            document.head.appendChild(appleIcon);
+        })();
+    </script>
 
     <style>
         /* 極簡風格顏色變數 */

@@ -19,7 +19,7 @@
     <link rel="icon" media="(prefers-color-scheme: light)" href="icon-light.png">
     <link rel="icon" media="(prefers-color-scheme: dark)" href="icon-dark.png">
     <!-- 備用 SVG (防止圖片載入失敗時仍有極簡圖示) -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23ffffff'/%3E%3Ctext x='12' y='75' font-family='Arial, sans-serif' font-size='70' font-weight='bold' fill='%23000000' letter-spacing='-2'%3EIV%3C/text%3E%3Ccircle cx='82' cy='70' r='11' fill='%23ff3b30'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23ffffff'/%3E%3Ctext x='12' y='75' font-family='Arial, sans-serif' font-size='70' font-weight='bold' fill='%23000000' letter-spacing='-2'%3EIV%3C/text%3E%3Ccircle cx='82' cy='70' r='11' fill='%23F15A24'/%3E%3C/svg%3E">
     
     <!-- 2. 給 iOS 儲存至主畫面用的 App Icon (透過 JS 動態切換) -->
     <link rel="apple-touch-icon" id="apple-icon" href="icon-light.png">
@@ -31,11 +31,11 @@
             --card-bg: #ffffff;        
             --text-main: #000000;      
             --text-muted: #8e8e93;     
-            --accent-color: #ff3b30;   
+            --accent-color: #F15A24;   
             
             --track-bg: #e5e5ea;       
             --fill-normal: #000000;    
-            --fill-max: #ff3b30;       
+            --fill-max: #F15A24;       
             
             --pill-bg: #f2f2f7;        
             --pill-active-bg: #000000;
@@ -50,11 +50,11 @@
             --card-bg: #111111;
             --text-main: #ffffff;
             --text-muted: #636366;
-            --accent-color: #ff453a;
+            --accent-color: #F15A24;
             
             --track-bg: #2c2c2e;
             --fill-normal: #ffffff;
-            --fill-max: #ff453a;
+            --fill-max: #F15A24;
             
             --pill-bg: #1c1c1e;
             --pill-active-bg: #ffffff;
@@ -89,9 +89,23 @@
         }
         
         .brand {
-            font-size: 28px; font-weight: 900; letter-spacing: -1px;
+            display: flex; align-items: center; cursor: pointer;
         }
-        .brand-dot { color: var(--accent-color); }
+        
+        /* 圖片 Logo 樣式 */
+        .brand img {
+            width: 42px; height: 42px;
+            border-radius: 12px; /* 微微嘅圓角配合 iOS 風格 */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+            object-fit: cover;
+        }
+        .brand img:hover { transform: scale(1.05); }
+
+        /* 根據深淺色模式自動切換 Logo 圖片 */
+        .logo-dark { display: none; }
+        :root.dark-theme .logo-light { display: none; }
+        :root.dark-theme .logo-dark { display: block; }
 
         /* 全新 Icon 按鈕包裝器 */
         .top-controls { display: flex; gap: 15px; }
@@ -262,7 +276,7 @@
         .purify-stats b { color: var(--text-main); }
         .purify-hundo { 
             color: var(--accent-color); font-weight: 800; margin-top: 15px; font-size: 14px; 
-            background: rgba(255, 59, 48, 0.1); display: inline-block; padding: 6px 14px; border-radius: 12px;
+            background: rgba(241, 90, 36, 0.1); display: inline-block; padding: 6px 14px; border-radius: 12px;
         }
         
         button { display: none; } 
@@ -320,7 +334,12 @@
 
 <div class="app-container">
     <div class="top-bar">
-        <div class="brand">IV<span class="brand-dot">.</span></div>
+        <!-- 直接用你準備好嘅 PNG 圖片做 Logo -->
+        <div class="brand" title="IV. Calculator">
+            <img src="icon-light.png" alt="IV Calc" class="logo-light">
+            <img src="icon-dark.png" alt="IV Calc" class="logo-dark">
+        </div>
+        
         <div class="top-controls">
             <!-- 主題設定 Icon (半月對比圖案) -->
             <div class="icon-btn-wrapper" title="設定主題 Theme">

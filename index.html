@@ -15,11 +15,14 @@
     <meta name="theme-color" content="#d1d1d6" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     
-    <!-- 1. 給一般瀏覽器分頁的 Favicon (使用 URL-encoded SVG，確保本地打開 100% 成功) -->
+    <!-- 1. 給一般瀏覽器分頁的 Favicon (支援系統深淺色自動切換) -->
+    <link rel="icon" media="(prefers-color-scheme: light)" href="icon-light.png">
+    <link rel="icon" media="(prefers-color-scheme: dark)" href="icon-dark.png">
+    <!-- 備用 SVG (防止圖片載入失敗時仍有極簡圖示) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23ffffff'/%3E%3Ctext x='12' y='75' font-family='Arial, sans-serif' font-size='70' font-weight='bold' fill='%23000000' letter-spacing='-2'%3EIV%3C/text%3E%3Ccircle cx='82' cy='70' r='11' fill='%23ff3b30'/%3E%3C/svg%3E">
     
-    <!-- 2. 給 iOS 儲存至主畫面用的 App Icon -->
-    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=IV&background=ffffff&color=000000&size=192&bold=true">
+    <!-- 2. 給 iOS 儲存至主畫面用的 App Icon (透過 JS 動態切換) -->
+    <link rel="apple-touch-icon" id="apple-icon" href="icon-light.png">
 
     <style>
         /* 極簡風格顏色變數 */
@@ -435,14 +438,29 @@
     function applyTheme() {
         const theme = document.getElementById('theme-select').value;
         const root = document.documentElement;
-        if (theme === 'dark') { root.classList.add('dark-theme'); } 
-        else if (theme === 'light') { root.classList.remove('dark-theme'); } 
-        else {
+        const appleIcon = document.getElementById('apple-icon');
+        let isDark = false;
+        
+        if (theme === 'dark') { 
+            isDark = true; 
+        } else if (theme === 'light') { 
+            isDark = false; 
+        } else {
             if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                root.classList.add('dark-theme');
-            } else { root.classList.remove('dark-theme'); }
+                isDark = true;
+            }
+        }
+
+        if (isDark) {
+            root.classList.add('dark-theme');
+            if(appleIcon) appleIcon.href = 'icon-dark.png'; // 動態切換為深色 App Icon
+        } else {
+            root.classList.remove('dark-theme');
+            if(appleIcon) appleIcon.href = 'icon-light.png'; // 動態切換為淺色 App Icon
         }
     }
+
+    // 監聽系統主題變化
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
         if (document.getElementById('theme-select').value === 'auto') { applyTheme(); }
     });

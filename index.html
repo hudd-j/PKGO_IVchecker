@@ -15,7 +15,11 @@
     <meta name="theme-color" content="#d1d1d6" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     
+    <!-- 網頁分頁圖示 (Favicon) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjZmZmZmZmIi8+PHRleHQgeD0iMTIiIHk9Ijc1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNzAiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMDAwMDAwIiBsZXR0ZXItc3BhY2luZz0iLTIiPklWPC90ZXh0PjxjaXJjbGUgY3g9IjgyIiBjeT0iNzAiIHI9IjExIiBmaWxsPSIjZmYzYjMwIi8+PC9zdmc+">
+    
+    <!-- 加入 Apple Touch Icon，讓 iPhone 儲存至主畫面時顯示專屬 App Icon -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjZmZmZmZmIi8+PHRleHQgeD0iMTIiIHk9Ijc1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNzAiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMDAwMDAwIiBsZXR0ZXItc3BhY2luZz0iLTIiPklWPC90ZXh0PjxjaXJjbGUgY3g9IjgyIiBjeT0iNzAiIHI9IjExIiBmaWxsPSIjZmYzYjMwIi8+PC9zdmc+">
 
     <style>
         /* 極簡風格顏色變數 */
@@ -365,7 +369,7 @@
                 <div class="stat-group">
                     <div class="stat-header">
                         <div class="stat-name" id="lbl-atk">攻擊</div>
-                        <input type="number" id="atk-num" class="stat-val-input" min="0" max="15" value="15" tabindex="1" inputmode="numeric" pattern="[0-9]*" oninput="syncFromInput('atk')">
+                        <input type="number" id="atk-num" class="stat-val-input" min="0" max="15" value="15" tabindex="1" inputmode="numeric" pattern="[0-9]*" onfocus="this.value=''" onblur="if(this.value===''){this.value='0'; syncFromInput('atk');}" oninput="syncFromInput('atk')">
                     </div>
                     <div class="slider-container">
                         <div class="ruler"></div>
@@ -381,7 +385,7 @@
                 <div class="stat-group">
                     <div class="stat-header">
                         <div class="stat-name" id="lbl-def">防禦</div>
-                        <input type="number" id="def-num" class="stat-val-input" min="0" max="15" value="15" tabindex="2" inputmode="numeric" pattern="[0-9]*" oninput="syncFromInput('def')">
+                        <input type="number" id="def-num" class="stat-val-input" min="0" max="15" value="15" tabindex="2" inputmode="numeric" pattern="[0-9]*" onfocus="this.value=''" onblur="if(this.value===''){this.value='0'; syncFromInput('def');}" oninput="syncFromInput('def')">
                     </div>
                     <div class="slider-container">
                         <div class="ruler"></div>
@@ -397,7 +401,7 @@
                 <div class="stat-group">
                     <div class="stat-header">
                         <div class="stat-name" id="lbl-hp">HP</div>
-                        <input type="number" id="hp-num" class="stat-val-input" min="0" max="15" value="15" tabindex="3" inputmode="numeric" pattern="[0-9]*" oninput="syncFromInput('hp')">
+                        <input type="number" id="hp-num" class="stat-val-input" min="0" max="15" value="15" tabindex="3" inputmode="numeric" pattern="[0-9]*" onfocus="this.value=''" onblur="if(this.value===''){this.value='0'; syncFromInput('hp');}" oninput="syncFromInput('hp')">
                     </div>
                     <div class="slider-container">
                         <div class="ruler"></div>

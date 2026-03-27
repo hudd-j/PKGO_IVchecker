@@ -1,2 +1,2 @@
-# PKGO_IVchecker
+# PKGO_IV checker
 IV Check

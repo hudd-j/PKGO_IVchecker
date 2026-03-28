@@ -519,7 +519,7 @@
                     <div class="stat-group">
                         <div class="stat-header">
                             <div class="stat-name" id="lbl-atk">ATTACK</div>
-                            <input type="number" id="atk-num" class="stat-val-input" min="0" max="15" value="15" tabindex="1" inputmode="numeric" pattern="[0-9]*" onfocus="this.value=''" onblur="if(this.value===''){this.value='0'; syncFromInput('atk');}" oninput="syncFromInput('atk')">
+                            <input type="number" id="atk-num" class="stat-val-input" min="0" max="15" value="15" tabindex="1" inputmode="numeric" pattern="[0-9]*" onfocus="this.value=''" onblur="if(this.value===''){this.value='0'; syncFromInput('atk');}" oninput="syncFromInput('atk'); handleInputAdvance(event, 'atk', 'def')">
                         </div>
                         <div class="slider-container">
                             <div class="ruler"></div>
@@ -535,7 +535,7 @@
                     <div class="stat-group">
                         <div class="stat-header">
                             <div class="stat-name" id="lbl-def">DEFENSE</div>
-                            <input type="number" id="def-num" class="stat-val-input" min="0" max="15" value="15" tabindex="2" inputmode="numeric" pattern="[0-9]*" onfocus="this.value=''" onblur="if(this.value===''){this.value='0'; syncFromInput('def');}" oninput="syncFromInput('def')">
+                            <input type="number" id="def-num" class="stat-val-input" min="0" max="15" value="15" tabindex="2" inputmode="numeric" pattern="[0-9]*" onfocus="this.value=''" onblur="if(this.value===''){this.value='0'; syncFromInput('def');}" oninput="syncFromInput('def'); handleInputAdvance(event, 'def', 'hp')">
                         </div>
                         <div class="slider-container">
                             <div class="ruler"></div>
@@ -551,7 +551,7 @@
                     <div class="stat-group">
                         <div class="stat-header">
                             <div class="stat-name" id="lbl-hp">HP</div>
-                            <input type="number" id="hp-num" class="stat-val-input" min="0" max="15" value="15" tabindex="3" inputmode="numeric" pattern="[0-9]*" onfocus="this.value=''" onblur="if(this.value===''){this.value='0'; syncFromInput('hp');}" oninput="syncFromInput('hp')">
+                            <input type="number" id="hp-num" class="stat-val-input" min="0" max="15" value="15" tabindex="3" inputmode="numeric" pattern="[0-9]*" onfocus="this.value=''" onblur="if(this.value===''){this.value='0'; syncFromInput('hp');}" oninput="syncFromInput('hp'); handleInputAdvance(event, 'hp', 'end')">
                         </div>
                         <div class="slider-container">
                             <div class="ruler"></div>
@@ -649,6 +649,40 @@
         document.getElementById('t-theme-light').innerText = t.themeLight;
         document.getElementById('t-theme-dark').innerText = t.themeDark;
         calculateIV(); 
+    }
+
+    // 自動跳轉及收起鍵盤功能
+    function handleInputAdvance(event, currentStat, nextStat) {
+        let inputEl = document.getElementById(currentStat + '-num');
+        
+        // 處理手機鍵盤嘅 "Enter" / "Next" 鍵
+        inputEl.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                advanceToNext(nextStat);
+            }
+        }, { once: true }); // 確保每次只綁定一次避免重複觸發
+
+        // 處理自動跳轉 (輸入滿兩個字元時)
+        if (inputEl.value.length >= 2) {
+            // 用 setTimeout 俾瀏覽器少少時間 render 數字再跳
+            setTimeout(() => {
+                advanceToNext(nextStat);
+            }, 10);
+        }
+    }
+
+    function advanceToNext(nextStat) {
+        if (nextStat === 'end') {
+            document.activeElement.blur(); // 輸入完成，收起鍵盤
+        } else {
+            let nextInput = document.getElementById(nextStat + '-num');
+            if(nextInput) {
+                nextInput.focus();
+                // 延遲選取內容，確保 iOS Safari 表現正常
+                setTimeout(() => nextInput.select(), 10);
+            }
+        }
     }
 
     function syncFromInput(stat) {
@@ -778,7 +812,6 @@
             `;
             
             purifyHintDiv.innerHTML = hintText;
-            // 替換原本的 style.display = 'flex'，改用 class 動畫切換
             purifyHintDiv.classList.add('show');
         } else {
             purifyHintDiv.classList.remove('show');

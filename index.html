@@ -43,7 +43,7 @@
             --ruler-color: rgba(0,0,0,0.15); 
             --gap-color: rgba(255, 255, 255, 0.5);      
 
-            /* 4級拉桿顏色 (淺色模式：不同深淺的黑/灰) */
+            /* 4級拉桿顏色 (淺色模式) */
             --fill-high: rgba(0, 0, 0, 0.7);    /* 11-14: 深灰色 */
             --fill-mid: rgba(0, 0, 0, 0.4);     /* 6-10: 灰色 */
             --fill-low: rgba(0, 0, 0, 0.15);    /* 0-5: 淺灰色 */
@@ -71,7 +71,7 @@
             --ruler-color: rgba(255,255,255,0.2);
             --gap-color: rgba(30, 30, 30, 0.6);
 
-            /* 4級拉桿顏色 (深色模式：不同深淺的白/灰) */
+            /* 4級拉桿顏色 (深色模式) */
             --fill-high: rgba(255, 255, 255, 0.8);  /* 11-14: 亮白色 */
             --fill-mid: rgba(255, 255, 255, 0.45);  /* 6-10: 中灰色 */
             --fill-low: rgba(255, 255, 255, 0.2);   /* 0-5: 暗灰色 */
@@ -157,7 +157,7 @@
         }
 
         /* ---------------------------------------------------
-           全新 Hero Section 網格佈局 (置頂與置底對齊魔法)
+           全新 Hero Section 網格佈局
            --------------------------------------------------- */
         .hero-grid {
             display: grid;
@@ -348,16 +348,40 @@
 
 
         /* ---------------------------------------------------
-           底部淨化區 Glass Panels
+           底部淨化區 (加入流暢下拉動畫)
            --------------------------------------------------- */
         .purify-hint {
-            padding: 16px 20px; 
+            /* 基礎 Glassmorphism 樣式 */
             background: var(--pill-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border); box-shadow: var(--glass-highlight);
             border-radius: 20px; color: var(--text-main);
-            display: none; align-items: center; justify-content: space-between;
-            gap: 15px; margin-top: 8px;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 15px; 
+            
+            /* 隱藏狀態 (預設為 0 高度與透明) */
+            max-height: 0;
+            padding: 0 20px;
+            margin-top: 0;
+            opacity: 0;
+            border: 1px solid transparent; 
+            box-shadow: none;
+            overflow: hidden; /* 防止內容漏出 */
+            transform: translateY(-10px); /* 向上微移，製造下拉效果 */
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+            pointer-events: none;
         }
+
+        /* 顯示狀態 (展開動畫) */
+        .purify-hint.show {
+            max-height: 120px; /* 足夠容納內容嘅安全高度 */
+            padding: 16px 20px; 
+            margin-top: 8px;
+            opacity: 1;
+            border-color: var(--card-border);
+            box-shadow: var(--glass-highlight);
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
         .purify-left { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-start; }
         .purify-title {
             font-size: 11px; font-weight: 800; color: var(--text-muted);
@@ -398,7 +422,7 @@
             
             .controls-layout { margin-bottom: 0; }
             .hero-grid { margin-bottom: 20px; padding: 0; }
-            .purify-hint { margin-top: 15px; }
+            .purify-hint { margin-top: 15px; } /* 桌面版間距微調 */
             
             .hero-grid, .controls-layout, .purify-hint { order: unset; }
         }
@@ -649,7 +673,6 @@
         updateVisuals(stat, val, numInput);
     }
 
-    // 更新視覺效果：4級漸變顏色系統
     function updateVisuals(stat, val, numInput) {
         const fillEl = document.getElementById(stat + '-fill');
         const labelRow = document.getElementById('lbl-' + stat);
@@ -667,7 +690,6 @@
             numInput.style.color = 'var(--text-main)';
             labelRow.style.color = 'var(--text-main)';
             
-            // 根據數值套用不同深淺嘅顏色
             if (val >= 11) {
                 fillEl.style.backgroundColor = 'var(--fill-high)';
             } else if (val >= 6) {
@@ -756,9 +778,10 @@
             `;
             
             purifyHintDiv.innerHTML = hintText;
-            purifyHintDiv.style.display = 'flex';
+            // 替換原本的 style.display = 'flex'，改用 class 動畫切換
+            purifyHintDiv.classList.add('show');
         } else {
-            purifyHintDiv.style.display = 'none';
+            purifyHintDiv.classList.remove('show');
         }
     }
 

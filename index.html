@@ -750,15 +750,19 @@
         document.getElementById('info-modal').classList.remove('active');
     }
 
-    // 自動跳轉至 Pokémon GO App (Deep Link)
+    // 自動跳轉至 Pokémon GO App (Deep Link) - 升級版
     function launchPokemonGo() {
-        // 偵測是否為行動裝置 (簡單判斷)
+        // 簡單判斷是否為流動裝置
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         
         if (isMobile) {
-            // 嘗試透過 Custom URL Scheme 開啟 Pokémon GO
-            // 由於各種瀏覽器安全性限制，可能需要結合 timeout 作 fallback
-            window.location.href = "pokemon-go://";
+            // 動態產生一個隱藏嘅 <a> 標籤去模擬點擊
+            // 呢個做法喺 iOS Safari 同 Chrome 比較容易觸發系統層級嘅 App 跳轉提示
+            let a = document.createElement('a');
+            a.href = "pokemongo://"; // 正確嘅 Pokémon GO URL Scheme
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
     }
 

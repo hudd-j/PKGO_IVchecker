@@ -40,10 +40,14 @@
             --pill-active-bg: rgba(0, 0, 0, 0.8);
             --pill-active-text: #ffffff;
             --track-bg: rgba(255, 255, 255, 0.4);       
-            --fill-normal: rgba(0, 0, 0, 0.7);    
-            --fill-max: var(--accent-color);       
             --ruler-color: rgba(0,0,0,0.15); 
             --gap-color: rgba(255, 255, 255, 0.5);      
+
+            /* 4級拉桿顏色 (淺色模式：不同深淺的黑/灰) */
+            --fill-high: rgba(0, 0, 0, 0.7);    /* 11-14: 深灰色 */
+            --fill-mid: rgba(0, 0, 0, 0.4);     /* 6-10: 灰色 */
+            --fill-low: rgba(0, 0, 0, 0.15);    /* 0-5: 淺灰色 */
+            --fill-max: var(--accent-color);    /* 15: 橙色 */
 
             /* 液態發光與陰影特效 */
             --glass-shadow: 0 16px 40px rgba(0,0,0,0.1);
@@ -64,10 +68,14 @@
             --pill-active-bg: rgba(255, 255, 255, 0.9);
             --pill-active-text: #000000;
             --track-bg: rgba(50, 50, 50, 0.5);
-            --fill-normal: rgba(255, 255, 255, 0.8);
-            --fill-max: var(--accent-color);
             --ruler-color: rgba(255,255,255,0.2);
             --gap-color: rgba(30, 30, 30, 0.6);
+
+            /* 4級拉桿顏色 (深色模式：不同深淺的白/灰) */
+            --fill-high: rgba(255, 255, 255, 0.8);  /* 11-14: 亮白色 */
+            --fill-mid: rgba(255, 255, 255, 0.45);  /* 6-10: 中灰色 */
+            --fill-low: rgba(255, 255, 255, 0.2);   /* 0-5: 暗灰色 */
+            --fill-max: var(--accent-color);        /* 15: 橙色 */
 
             --glass-shadow: 0 16px 40px rgba(0,0,0,0.5);
             --glass-highlight: inset 0 1px 1px rgba(255, 255, 255, 0.15), inset 1px 0 2px rgba(255, 255, 255, 0.05);
@@ -158,7 +166,6 @@
             padding: 0 5px;
         }
 
-        /* 第 1 行：個體值標題 (右上，置頂) */
         .total-label {
             grid-column: 2; grid-row: 1;
             align-self: start; 
@@ -166,14 +173,13 @@
             letter-spacing: 1px; text-transform: uppercase;
             text-align: right; 
             line-height: 1;
-            margin-top: 6px; /* 視覺微調，與大數字 Cap-height 完美平排 */
+            margin-top: 6px; 
         }
 
-        /* 第 1+2 行：超大百分比 (左側橫跨兩行，撐開高度) */
         .massive-percent {
             grid-column: 1; grid-row: 1 / 3; 
             align-self: center; 
-            font-size: 72px; font-weight: 800; line-height: 0.85; /* 壓平預設行高 */
+            font-size: 72px; font-weight: 800; line-height: 0.85; 
             letter-spacing: -3px; transition: color 0.3s;
             font-variant-numeric: tabular-nums; margin-left: -2px;
         }
@@ -182,13 +188,12 @@
             letter-spacing: 0; margin-left: 2px; color: var(--text-muted);
         }
         
-        /* 第 2 行：實際個體值 (右下，置底) */
         .total-stats {
             grid-column: 2; grid-row: 2;
             align-self: end;
             display: flex; align-items: baseline; justify-content: flex-end;
             font-variant-numeric: tabular-nums;
-            margin-bottom: -2px; /* 視覺微調，與大數字 Baseline 平排 */
+            margin-bottom: -2px; 
         }
         .score-value {
             font-size: 36px; font-weight: 800; line-height: 0.85; 
@@ -210,7 +215,7 @@
             font-size: 11px; font-weight: 800; line-height: 1;
             box-sizing: border-box; white-space: nowrap;
             transition: all 0.3s;
-            margin-top: 10px; /* 確保與上面數字有合適距離 */
+            margin-top: 10px; 
         }
 
         .pvp-analysis {
@@ -644,12 +649,14 @@
         updateVisuals(stat, val, numInput);
     }
 
+    // 更新視覺效果：4級漸變顏色系統
     function updateVisuals(stat, val, numInput) {
         const fillEl = document.getElementById(stat + '-fill');
         const labelRow = document.getElementById('lbl-' + stat);
         const rangeInput = document.getElementById(stat + '-range');
         
         fillEl.style.width = ((val / 15) * 100) + '%';
+        rangeInput.classList.remove('maxed');
         
         if (val === 15) {
             fillEl.style.backgroundColor = 'var(--fill-max)';
@@ -657,10 +664,17 @@
             labelRow.style.color = 'var(--accent-color)';
             rangeInput.classList.add('maxed');
         } else {
-            fillEl.style.backgroundColor = 'var(--fill-normal)';
             numInput.style.color = 'var(--text-main)';
             labelRow.style.color = 'var(--text-main)';
-            rangeInput.classList.remove('maxed');
+            
+            // 根據數值套用不同深淺嘅顏色
+            if (val >= 11) {
+                fillEl.style.backgroundColor = 'var(--fill-high)';
+            } else if (val >= 6) {
+                fillEl.style.backgroundColor = 'var(--fill-mid)';
+            } else {
+                fillEl.style.backgroundColor = 'var(--fill-low)';
+            }
         }
 
         calculateIV(); 

@@ -131,13 +131,21 @@
             margin-bottom: 15px;
         }
         
-        .brand { display: flex; align-items: center; cursor: pointer; }
+        .brand { 
+            display: flex; align-items: center; cursor: pointer; 
+            /* 防止選取及預設觸控動作（如長按儲存） */
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
         .brand img {
             width: 36px; height: 36px; border-radius: 10px; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             transition: transform 0.3s; object-fit: cover;
+            /* 讓 img 元素本身不接收點擊事件，由外層 .brand 接收，進一步防止長按儲存圖案 */
+            pointer-events: none;
         }
-        .brand img:hover { transform: scale(1.05); }
+        .brand:hover img { transform: scale(1.05); }
 
         .logo-dark { display: none; }
         :root.dark-theme .logo-light { display: none; }
@@ -214,9 +222,11 @@
             border-radius: 8px; 
             font-size: 11px; font-weight: 800; line-height: 1;
             box-sizing: border-box; white-space: nowrap;
-            transition: all 0.3s;
             margin-top: 10px; 
+            cursor: pointer; 
+            transition: all 0.3s, transform 0.1s;
         }
+        .unified-badge:active { transform: scale(0.95); } 
 
         .pvp-analysis {
             grid-column: 1; grid-row: 3; justify-self: start;
@@ -231,7 +241,7 @@
             grid-column: 2; grid-row: 3; justify-self: end;
             background: var(--pill-bg); border: 1px solid var(--card-border); box-shadow: var(--glass-highlight);
             color: var(--text-main); 
-            transition: all 0.3s;
+            transition: all 0.3s, transform 0.1s; 
             visibility: hidden;
             opacity: 0;
             transform: translateY(5px);
@@ -241,6 +251,8 @@
             opacity: 1; 
             transform: translateY(0); 
         }
+        .status-badge.show:active { transform: scale(0.95); }
+        
         .status-badge.perfect { background: var(--accent-color); color: #fff; border-color: transparent; }
         .status-badge.excellent { color: var(--accent-color); } 
 
@@ -348,61 +360,90 @@
 
 
         /* ---------------------------------------------------
-           底部淨化區 (加入流暢下拉動畫)
+           底部淨化區
            --------------------------------------------------- */
         .purify-hint {
-            /* 基礎 Glassmorphism 樣式 */
             background: var(--pill-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
             border-radius: 20px; color: var(--text-main);
             display: flex; align-items: center; justify-content: space-between;
             gap: 15px; 
             
-            /* 隱藏狀態 (預設為 0 高度與透明) */
-            max-height: 0;
-            padding: 0 20px;
-            margin-top: 0;
-            opacity: 0;
-            border: 1px solid transparent; 
-            box-shadow: none;
-            overflow: hidden; /* 防止內容漏出 */
-            transform: translateY(-10px); /* 向上微移，製造下拉效果 */
+            max-height: 0; padding: 0 20px; margin-top: 0; opacity: 0;
+            border: 1px solid transparent; box-shadow: none;
+            overflow: hidden; 
+            transform: translateY(-10px); 
             transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
             pointer-events: none;
         }
-
-        /* 顯示狀態 (展開動畫) */
         .purify-hint.show {
-            max-height: 120px; /* 足夠容納內容嘅安全高度 */
-            padding: 16px 20px; 
-            margin-top: 8px;
-            opacity: 1;
-            border-color: var(--card-border);
-            box-shadow: var(--glass-highlight);
-            transform: translateY(0);
-            pointer-events: auto;
+            max-height: 120px; padding: 16px 20px; margin-top: 8px; opacity: 1;
+            border-color: var(--card-border); box-shadow: var(--glass-highlight);
+            transform: translateY(0); pointer-events: auto;
         }
 
         .purify-left { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-start; }
-        .purify-title {
-            font-size: 11px; font-weight: 800; color: var(--text-muted);
-            letter-spacing: 1px; margin-bottom: 2px; text-transform: uppercase;
-        }
-        .purify-pct {
-            font-size: 46px; font-weight: 800; line-height: 1; letter-spacing: -2px;
-            font-variant-numeric: tabular-nums; transition: color 0.3s;
-        }
+        .purify-title { font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 2px; text-transform: uppercase; }
+        .purify-pct { font-size: 46px; font-weight: 800; line-height: 1; letter-spacing: -2px; font-variant-numeric: tabular-nums; transition: color 0.3s; }
         .purify-pct-symbol { font-size: 20px; font-weight: 600; vertical-align: top; color: var(--text-muted); margin-left: 2px; }
         
         .purify-right { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
         .purify-stats { font-size: 14px; font-weight: 700; color: var(--text-muted); }
         .purify-stats b { color: var(--text-main); }
         .purify-total-hint { font-size: 11px; margin-top: 2px; }
-        .purify-hundo { 
-            color: var(--accent-color); font-weight: 800; margin-top: 6px; font-size: 12px; 
-            background: rgba(241, 90, 36, 0.15); display: inline-block; padding: 4px 10px; border-radius: 8px;
-        }
+        .purify-hundo { color: var(--accent-color); font-weight: 800; margin-top: 6px; font-size: 12px; background: rgba(241, 90, 36, 0.15); display: inline-block; padding: 4px 10px; border-radius: 8px; }
         
         button { display: none; } 
+
+        /* ---------------------------------------------------
+           彈出框 (Modal) 樣式
+           --------------------------------------------------- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            z-index: 1000; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: all 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal-container {
+            background: var(--card-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--card-border); border-radius: 36px;
+            padding: 24px 20px; width: 90%; max-width: 360px;
+            box-shadow: var(--glass-shadow), var(--glass-highlight);
+            transform: translateY(20px) scale(0.95); transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative; color: var(--text-main);
+        }
+        .modal-overlay.active .modal-container { transform: translateY(0) scale(1); }
+
+        .modal-close-btn {
+            position: absolute; top: 18px; left: 18px; 
+            width: 32px; height: 32px; border-radius: 50%;
+            background: var(--pill-bg); border: 1px solid var(--card-border);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: var(--text-muted); transition: all 0.2s;
+        }
+        .modal-close-btn:hover { color: var(--text-main); transform: scale(1.05); background: var(--card-bg); }
+        .modal-close-btn:active { transform: scale(0.95); }
+        .modal-close-btn svg { width: 16px; height: 16px; stroke-width: 2.5; }
+
+        .modal-title {
+            text-align: center; font-size: 16px; font-weight: 800; 
+            margin-bottom: 24px; color: var(--text-main); letter-spacing: 0.5px;
+            padding-top: 5px;
+        }
+
+        .criteria-list { display: flex; flex-direction: column; gap: 16px; }
+        .criteria-row { display: flex; flex-direction: column; align-items: flex-start; }
+        
+        .modal-badge { 
+            visibility: visible !important; opacity: 1 !important; transform: none !important; 
+            margin: 0 0 6px 0 !important; cursor: default !important;
+        }
+        .criteria-desc {
+            font-size: 13px; font-weight: 600; color: var(--text-muted); 
+            padding-left: 6px; line-height: 1.4;
+        }
+
 
         /* ---------------------------------------------------
            響應式橫向排版
@@ -422,7 +463,7 @@
             
             .controls-layout { margin-bottom: 0; }
             .hero-grid { margin-bottom: 20px; padding: 0; }
-            .purify-hint { margin-top: 15px; } /* 桌面版間距微調 */
+            .purify-hint { margin-top: 15px; } 
             
             .hero-grid, .controls-layout, .purify-hint { order: unset; }
         }
@@ -438,9 +479,10 @@
 
 <div class="app-container">
     <div class="top-bar">
-        <div class="brand" title="IV Check">
-            <img src="icon-light.png" alt="IV Check" class="logo-light">
-            <img src="icon-dark.png" alt="IV Check" class="logo-dark">
+        <!-- 點擊跳轉至 Pokémon GO (只限手機) -->
+        <div class="brand" title="Open Pokémon GO" onclick="launchPokemonGo()">
+            <img src="icon-light.png" alt="IV Check" class="logo-light" oncontextmenu="return false;">
+            <img src="icon-dark.png" alt="IV Check" class="logo-dark" oncontextmenu="return false;">
         </div>
         
         <div class="top-controls">
@@ -484,19 +526,18 @@
                 <!-- Row 1: 個體值標題 (置頂) -->
                 <div class="total-label" id="t-iv-label">IV STATS</div>
                 
-                <!-- Row 1+2: 百分比大數字 (跨越兩行，撐開高度) -->
+                <!-- Row 1+2: 百分比大數字 -->
                 <div class="massive-percent" id="percent-text">100<span class="pct-symbol">%</span></div>
                 
-                <!-- Row 2: 實際個體值分數 (置底) -->
+                <!-- Row 2: 實際個體值分數 -->
                 <div class="total-stats" id="total-text">
                     <span class="score-value" id="score-val">45</span>
                     <span class="score-max">/ 45</span>
                 </div>
                 
-                <!-- Row 3: 底部標籤 -->
-                <div id="pvp-analysis" class="unified-badge pvp-analysis"></div>
-                <!-- 給予預設文字確保高度始終存在 -->
-                <div id="comment" class="unified-badge status-badge">EXCELLENT</div>
+                <!-- Row 3: 底部點擊標籤 -->
+                <div id="pvp-analysis" class="unified-badge pvp-analysis" onclick="openModal()"></div>
+                <div id="comment" class="unified-badge status-badge" onclick="openModal()">EXCELLENT</div>
             </div>
             
             <div id="purify-hint" class="purify-hint"></div>
@@ -566,7 +607,43 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
+<!-- 評分標準 Modal -->
+<div id="info-modal" class="modal-overlay" onclick="closeModal()">
+    <div class="modal-container" onclick="event.stopPropagation()">
+        <div class="modal-close-btn" onclick="closeModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
+        
+        <div class="modal-title" id="m-title">評分標準</div>
+        
+        <div class="criteria-list">
+            <div class="criteria-row">
+                <div class="unified-badge status-badge perfect modal-badge" id="m-hundo-badge">PERFECT IV</div>
+                <div class="criteria-desc" id="m-desc-hundo">總數值 = 45 (15/15/15)</div>
+            </div>
+            <div class="criteria-row">
+                <div class="unified-badge status-badge excellent modal-badge" id="m-exc-badge">EXCELLENT</div>
+                <div class="criteria-desc" id="m-desc-exc">總數值 ≥ 41 (≥ 91%)</div>
+            </div>
+            <div class="criteria-row">
+                <div class="unified-badge pvp-analysis highlight modal-badge" id="m-glul-badge">超級 / 高級聯盟</div>
+                <div class="criteria-desc" id="m-desc-glul">攻擊 ≤ 5, 防禦及HP ≥ 12</div>
+            </div>
+            <div class="criteria-row">
+                <div class="unified-badge pvp-analysis highlight modal-badge" id="m-ml-badge">大師聯盟 / 團體戰</div>
+                <div class="criteria-desc" id="m-desc-ml">總數值 ≥ 40</div>
+            </div>
+            <div class="criteria-row">
+                <div class="unified-badge pvp-analysis outline modal-badge" id="m-none-badge">一般體質</div>
+                <div class="criteria-desc" id="m-desc-none">未達上述特定要求</div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -601,13 +678,13 @@
     });
 
     const langDict = {
-        'en': { ivLabel: "IV STATS", normal: "Normal", shadow: "Shadow", atk: "ATTACK", def: "DEFENSE", hp: "HP", hundo: "HUNDO", nundo: "NUNDO", good: "EXCELLENT", pTitle: "Purified", pAtk: "Atk", pDef: "Def", pHp: "HP", pTotal: "Total", pHundo: "100% Hundo", themeAuto: "Auto", themeLight: "Light", themeDark: "Dark", pvpGLUL: "Great / Ultra League", pvpML: "Master / Raid", pvpNone: "Trade / Transfer" },
-        'zh-HK': { ivLabel: "個體值", normal: "一般", shadow: "暗影", atk: "攻擊", def: "防禦", hp: "HP", hundo: "PERFECT IV", nundo: "ZERO IV", good: "EXCELLENT", pTitle: "淨化預測", pAtk: "攻", pDef: "防", pHp: "血", pTotal: "總計", pHundo: "淨化後完美", themeAuto: "Auto", themeLight: "Light", themeDark: "Dark", pvpGLUL: "超級 / 高級聯盟", pvpML: "大師聯盟 / 團體戰", pvpNone: "一般體質 (作交換或傳送)" },
-        'zh-CN': { ivLabel: "个体值", normal: "一般", shadow: "暗影", atk: "攻击", def: "防御", hp: "HP", hundo: "PERFECT IV", nundo: "ZERO IV", good: "EXCELLENT", pTitle: "净化预测", pAtk: "攻", pDef: "防", pHp: "血", pTotal: "总计", pHundo: "净化后完美", themeAuto: "Auto", themeLight: "Light", themeDark: "Dark", pvpGLUL: "超级 / 高级联盟", pvpML: "大师联盟 / 团体战", pvpNone: "一般体质 (作交换或传送)" },
-        'ja': { ivLabel: "個体値", normal: "通常", shadow: "シャドウ", atk: "攻撃", def: "防御", hp: "HP", hundo: "PERFECT", nundo: "ZERO", good: "EXCELLENT", pTitle: "ライト予測", pAtk: "攻", pDef: "防", pHp: "HP", pTotal: "合計", pHundo: "ライト化で100%", themeAuto: "Auto", themeLight: "Light", themeDark: "Dark", pvpGLUL: "スーパー / ハイパー", pvpML: "マスター / レイド", pvpNone: "通常個体" },
-        'ko': { ivLabel: "개체값", normal: "일반", shadow: "그림자", atk: "공격", def: "방어", hp: "HP", hundo: "PERFECT IV", nundo: "ZERO IV", good: "EXCELLENT", pTitle: "정화 예측", pAtk: "공", pDef: "방", pHp: "체", pTotal: "총합", pHundo: "정화 시 100%", themeAuto: "Auto", themeLight: "Light", themeDark: "Dark", pvpGLUL: "슈퍼 / 하이퍼 리그", pvpML: "마스터 리그 / 레이드", pvpNone: "일반 (교환/박사)" },
-        'es': { ivLabel: "IVS", normal: "Normal", shadow: "Oscuro", atk: "ATAQUE", def: "DEFENSA", hp: "PS", hundo: "PERFECTO", nundo: "CERO", good: "EXCELENTE", pTitle: "Purificado", pAtk: "Atq", pDef: "Def", pHp: "PS", pTotal: "Total", pHundo: "100% si se purifica", themeAuto: "Auto", themeLight: "Claro", themeDark: "Oscuro", pvpGLUL: "Liga Super / Ultra", pvpML: "Liga Master / Incursión", pvpNone: "Intercambiar / Transferir" },
-        'fr': { ivLabel: "IVS", normal: "Normal", shadow: "Obscur", atk: "ATTAQUE", def: "DÉFENSE", hp: "PV", hundo: "PARFAIT", nundo: "ZÉRO", good: "EXCELLENT", pTitle: "Purifié", pAtk: "Att", pDef: "Déf", pHp: "PV", pTotal: "Total", pHundo: "100% si purifié", themeAuto: "Auto", themeLight: "Clair", themeDark: "Sombre", pvpGLUL: "Ligue Super / Hyper", pvpML: "Ligue Master / Raid", pvpNone: "Échanger / Transférer" }
+        'en': { ivLabel: "IV STATS", normal: "Normal", shadow: "Shadow", atk: "ATTACK", def: "DEFENSE", hp: "HP", hundo: "HUNDO", nundo: "NUNDO", good: "EXCELLENT", pTitle: "Purified", pAtk: "Atk", pDef: "Def", pHp: "HP", pTotal: "Total", pHundo: "100% Hundo", themeAuto: "Auto", themeLight: "Light", themeDark: "Dark", pvpGLUL: "Great / Ultra League", pvpML: "Master / Raid", pvpNone: "Normal Stats", mTitle: "Rating Criteria", mDescHundo: "Total Stats = 45 (15/15/15)", mDescExc: "Total Stats ≥ 41 (≥ 91%)", mDescGLUL: "Atk ≤ 5, Def ≥ 12, HP ≥ 12", mDescML: "Total Stats ≥ 40", mDescNone: "Does not meet specific criteria" },
+        'zh-HK': { ivLabel: "個體值", normal: "一般", shadow: "暗影", atk: "攻擊", def: "防禦", hp: "HP", hundo: "PERFECT IV", nundo: "ZERO IV", good: "EXCELLENT", pTitle: "淨化預測", pAtk: "攻", pDef: "防", pHp: "血", pTotal: "總計", pHundo: "淨化後完美", themeAuto: "Auto", themeLight: "Light", themeDark: "Dark", pvpGLUL: "超級 / 高級聯盟", pvpML: "大師聯盟 / 團體戰", pvpNone: "一般體質", mTitle: "評分標準", mDescHundo: "總數值 = 45 (15/15/15)", mDescExc: "總數值 ≥ 41 (≥ 91%)", mDescGLUL: "攻擊 ≤ 5, 防禦及HP ≥ 12", mDescML: "總數值 ≥ 40", mDescNone: "未達上述特定要求" },
+        'zh-CN': { ivLabel: "个体值", normal: "一般", shadow: "暗影", atk: "攻击", def: "防御", hp: "HP", hundo: "PERFECT IV", nundo: "ZERO IV", good: "EXCELLENT", pTitle: "净化预测", pAtk: "攻", pDef: "防", pHp: "血", pTotal: "总计", pHundo: "净化后完美", themeAuto: "Auto", themeLight: "Light", themeDark: "Dark", pvpGLUL: "超级 / 高级联盟", pvpML: "大师联盟 / 团体战", pvpNone: "一般体质", mTitle: "评分标准", mDescHundo: "总数值 = 45 (15/15/15)", mDescExc: "总数值 ≥ 41 (≥ 91%)", mDescGLUL: "攻击 ≤ 5, 防御及HP ≥ 12", mDescML: "总数值 ≥ 40", mDescNone: "未达上述特定要求" },
+        'ja': { ivLabel: "個体値", normal: "通常", shadow: "シャドウ", atk: "攻撃", def: "防御", hp: "HP", hundo: "PERFECT", nundo: "ZERO", good: "EXCELLENT", pTitle: "ライト予測", pAtk: "攻", pDef: "防", pHp: "HP", pTotal: "合計", pHundo: "ライト化で100%", themeAuto: "Auto", themeLight: "Light", themeDark: "Dark", pvpGLUL: "スーパー / ハイパー", pvpML: "マスター / レイド", pvpNone: "通常個体", mTitle: "評価基準", mDescHundo: "合計 = 45 (15/15/15)", mDescExc: "合計 ≥ 41 (≥ 91%)", mDescGLUL: "攻撃 ≤ 5, 防御 ≥ 12, HP ≥ 12", mDescML: "合計 ≥ 40", mDescNone: "特定の基準を満たしていません" },
+        'ko': { ivLabel: "개체값", normal: "일반", shadow: "그림자", atk: "공격", def: "방어", hp: "HP", hundo: "PERFECT IV", nundo: "ZERO IV", good: "EXCELLENT", pTitle: "정화 예측", pAtk: "공", pDef: "방", pHp: "체", pTotal: "총합", pHundo: "정화 시 100%", themeAuto: "Auto", themeLight: "Light", themeDark: "Dark", pvpGLUL: "슈퍼 / 하이퍼 리그", pvpML: "마스터 리그 / 레이드", pvpNone: "일반 개체", mTitle: "평가 기준", mDescHundo: "총합 = 45 (15/15/15)", mDescExc: "총합 ≥ 41 (≥ 91%)", mDescGLUL: "공격 ≤ 5, 방어 ≥ 12, HP ≥ 12", mDescML: "총합 ≥ 40", mDescNone: "특정 기준을 충족하지 않음" },
+        'es': { ivLabel: "IVS", normal: "Normal", shadow: "Oscuro", atk: "ATAQUE", def: "DEFENSA", hp: "PS", hundo: "PERFECTO", nundo: "CERO", good: "EXCELENTE", pTitle: "Purificado", pAtk: "Atq", pDef: "Def", pHp: "PS", pTotal: "Total", pHundo: "100% si se purifica", themeAuto: "Auto", themeLight: "Claro", themeDark: "Oscuro", pvpGLUL: "Liga Super / Ultra", pvpML: "Liga Master / Incursión", pvpNone: "IVs Normales", mTitle: "Criterios", mDescHundo: "Total = 45 (15/15/15)", mDescExc: "Total ≥ 41 (≥ 91%)", mDescGLUL: "Atq ≤ 5, Def ≥ 12, PS ≥ 12", mDescML: "Total ≥ 40", mDescNone: "No cumple criterios específicos" },
+        'fr': { ivLabel: "IVS", normal: "Normal", shadow: "Obscur", atk: "ATTAQUE", def: "DÉFENSE", hp: "PV", hundo: "PARFAIT", nundo: "ZÉRO", good: "EXCELLENT", pTitle: "Purifié", pAtk: "Att", pDef: "Déf", pHp: "PV", pTotal: "Total", pHundo: "100% si purifié", themeAuto: "Auto", themeLight: "Clair", themeDark: "Sombre", pvpGLUL: "Ligue Super / Hyper", pvpML: "Ligue Master / Raid", pvpNone: "IV Normaux", mTitle: "Critères", mDescHundo: "Total = 45 (15/15/15)", mDescExc: "Total ≥ 41 (≥ 91%)", mDescGLUL: "Att ≤ 5, Déf ≥ 12, PV ≥ 12", mDescML: "Total ≥ 40", mDescNone: "Ne répond pas aux critères spécifiques" }
     };
     
     let currentLang = 'en';
@@ -648,38 +725,66 @@
         document.getElementById('t-theme-auto').innerText = t.themeAuto;
         document.getElementById('t-theme-light').innerText = t.themeLight;
         document.getElementById('t-theme-dark').innerText = t.themeDark;
+        
+        // 更新 Modal 內的文字
+        document.getElementById('m-title').innerText = t.mTitle;
+        document.getElementById('m-hundo-badge').innerText = t.hundo;
+        document.getElementById('m-desc-hundo').innerText = t.mDescHundo;
+        document.getElementById('m-exc-badge').innerText = t.good;
+        document.getElementById('m-desc-exc').innerText = t.mDescExc;
+        document.getElementById('m-glul-badge').innerText = t.pvpGLUL;
+        document.getElementById('m-desc-glul').innerText = t.mDescGLUL;
+        document.getElementById('m-ml-badge').innerText = t.pvpML;
+        document.getElementById('m-desc-ml').innerText = t.mDescML;
+        document.getElementById('m-none-badge').innerText = t.pvpNone;
+        document.getElementById('m-desc-none').innerText = t.mDescNone;
+
         calculateIV(); 
+    }
+
+    // Modal 開關控制
+    function openModal() {
+        document.getElementById('info-modal').classList.add('active');
+    }
+    function closeModal() {
+        document.getElementById('info-modal').classList.remove('active');
+    }
+
+    // 自動跳轉至 Pokémon GO App (Deep Link)
+    function launchPokemonGo() {
+        // 偵測是否為行動裝置 (簡單判斷)
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+            // 嘗試透過 Custom URL Scheme 開啟 Pokémon GO
+            // 由於各種瀏覽器安全性限制，可能需要結合 timeout 作 fallback
+            window.location.href = "pokemon-go://";
+        }
     }
 
     // 自動跳轉及收起鍵盤功能
     function handleInputAdvance(event, currentStat, nextStat) {
         let inputEl = document.getElementById(currentStat + '-num');
         
-        // 處理手機鍵盤嘅 "Enter" / "Next" 鍵
         inputEl.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 advanceToNext(nextStat);
             }
-        }, { once: true }); // 確保每次只綁定一次避免重複觸發
+        }, { once: true }); 
 
-        // 處理自動跳轉 (輸入滿兩個字元時)
         if (inputEl.value.length >= 2) {
-            // 用 setTimeout 俾瀏覽器少少時間 render 數字再跳
-            setTimeout(() => {
-                advanceToNext(nextStat);
-            }, 10);
+            setTimeout(() => { advanceToNext(nextStat); }, 10);
         }
     }
 
     function advanceToNext(nextStat) {
         if (nextStat === 'end') {
-            document.activeElement.blur(); // 輸入完成，收起鍵盤
+            document.activeElement.blur(); 
         } else {
             let nextInput = document.getElementById(nextStat + '-num');
             if(nextInput) {
                 nextInput.focus();
-                // 延遲選取內容，確保 iOS Safari 表現正常
                 setTimeout(() => nextInput.select(), 10);
             }
         }
@@ -724,15 +829,10 @@
             numInput.style.color = 'var(--text-main)';
             labelRow.style.color = 'var(--text-main)';
             
-            if (val >= 11) {
-                fillEl.style.backgroundColor = 'var(--fill-high)';
-            } else if (val >= 6) {
-                fillEl.style.backgroundColor = 'var(--fill-mid)';
-            } else {
-                fillEl.style.backgroundColor = 'var(--fill-low)';
-            }
+            if (val >= 11) { fillEl.style.backgroundColor = 'var(--fill-high)'; } 
+            else if (val >= 6) { fillEl.style.backgroundColor = 'var(--fill-mid)'; } 
+            else { fillEl.style.backgroundColor = 'var(--fill-low)'; }
         }
-
         calculateIV(); 
     }
 
